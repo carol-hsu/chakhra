@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import com.example.statesaver.utils.DbHandler;
 import com.example.statesaver.utils.IdManager;
+import com.example.statesaver.utils.RqHandler;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         DbHandler.getInstance(getApplicationContext());
+        Thread rqHander = new RqHandler(getApplicationContext());
+        rqHander.start();
     }
 
     @Override
