@@ -1,32 +1,23 @@
 package com.example.statesaver;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-
-import com.example.statesaver.types.HelpItem;
-import com.example.statesaver.utils.ContentItemAdapter;
-import com.example.statesaver.utils.HelpItemAdapter;
-
-import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HelpFragment.OnFragmentInteractionListener} interface
+ * {@link CommunityFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HelpFragment#newInstance} factory method to
+ * Use the {@link CommunityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HelpFragment extends Fragment {
+public class CommunityFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -38,7 +29,7 @@ public class HelpFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public HelpFragment() {
+    public CommunityFragment() {
         // Required empty public constructor
     }
 
@@ -48,11 +39,11 @@ public class HelpFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HelpFragment.
+     * @return A new instance of fragment CommunityFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HelpFragment newInstance(String param1, String param2) {
-        HelpFragment fragment = new HelpFragment();
+    public static CommunityFragment newInstance(String param1, String param2) {
+        CommunityFragment fragment = new CommunityFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,42 +64,7 @@ public class HelpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
-
-        final ArrayList<String> question_list = new ArrayList<String>();
-        question_list.add("Why my loop never ends in python?");
-        question_list.add("How to indent my code?");
-        question_list.add("What is the difference between div and span tag?");
-
-        ArrayList<HelpItem> list = new ArrayList<HelpItem>();
-        for (int i = 0; i < 3; i++) {
-            HelpItem data = new HelpItem();
-            data.setQuestion(question_list.get(i));
-
-            int count  = 0;
-            if ( i == 0 ){
-                count = 3;
-            } if ( i == 2) {
-                count = 5;
-            }
-            data.setAnswersCount(count);
-            list.add(data);
-        }
-
-
-        HelpItemAdapter adapter = new HelpItemAdapter(list, getActivity());
-        ListView lView = rootView.findViewById(R.id.help_list_layout);
-        lView.setAdapter(adapter);
-//        lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String rowItem = list.get(position);
-//                Intent intent = new Intent(getActivity().getApplicationContext(), QaActivity.class);
-//                intent.putExtra("questionId", rowItem);
-//                startActivity(intent);
-//            }
-//        });
-        return rootView;
+        return inflater.inflate(R.layout.fragment_community, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

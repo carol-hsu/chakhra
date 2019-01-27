@@ -1,6 +1,7 @@
 package com.example.statesaver.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.statesaver.MainActivity;
+import com.example.statesaver.QaActivity;
 import com.example.statesaver.R;
+import com.example.statesaver.ViewActivity;
 import com.example.statesaver.types.HelpItem;
 
 import java.util.ArrayList;
@@ -59,6 +62,14 @@ public class HelpItemAdapter extends BaseAdapter implements ListAdapter {
         TextView listItemCountText = (TextView)view.findViewById(R.id.count_text);
         listItemCountText.setText(""+hi.getAnswersCount());
 
+        listItemText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, QaActivity.class);
+                intent.putExtra(QaActivity.QUESTION, list.get(position).getQuestion());
+                context.startActivity(intent);
+            }
+        });
 
         return view;
     }
