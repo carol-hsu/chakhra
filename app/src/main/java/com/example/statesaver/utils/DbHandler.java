@@ -12,11 +12,14 @@ import com.example.statesaver.types.ContentData;
 import com.example.statesaver.types.HelpItem;
 import com.example.statesaver.types.RequestItem;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DbHandler extends SQLiteOpenHelper {
 
+    public String searchParam = ""; //hack string to bypass adding entry to the database request table
     private static int REQUEST_ID = 0;
 
     public static String TABLE_CONTENT = "contents";
@@ -71,7 +74,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
         String CREATE_REQ_TABLE = "CREATE TABLE " + TABLE_REQUESTS +
                 "(" +
-                REQUEST_ID_FIELD + " TEXT PRIMARY KEY," + // Define a primary key
+                REQUEST_ID_FIELD + " TEXT ," + // Define a primary key
                 REQUEST_TEXT_FIELD + " TEXT, " +
                 REQUEST_LAST_HOP_FIELD + " TEXT, " +
                 REQUEST_ORIGIN_FIELD + " TEXT" +
@@ -121,11 +124,17 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public void insertOwnSearchRequestInDb(String searchString) {
         Log.d("DB", "Inserting search string into DB "+searchString);
-        String id = IdManager.getId();
-        String lastHop = id;
-        String origin = id;
-        String requestId = id  + REQUEST_ID++;
-        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
+//        String id = IdManager.getId();
+//        String lastHop = id;
+//        String origin = id;
+//        String requestId = id + "-" + UUID.randomUUID().toString() + REQUEST_ID++ ;
+//        Log.d("DB", "id = "+id);
+//        Log.d("DB", "lastHop = "+lastHop);
+//        Log.d("DB", "origin = "+origin);
+//        Log.d("DB", "reqId = "+requestId);
+//        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
+
+        searchParam = searchString;
     }
 
     private void insertSearchRequestInDb(String requestId, String lastHop, String origin, String searchString) {
@@ -133,9 +142,9 @@ public class DbHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(REQUEST_ID_FIELD, requestId);
+        values.put(REQUEST_TEXT_FIELD, searchString);
         values.put(REQUEST_LAST_HOP_FIELD, lastHop);
         values.put(REQUEST_ORIGIN_FIELD, origin);
-        values.put(REQUEST_TEXT_FIELD, searchString);
 
         database.insert(TABLE_REQUESTS, null, values);
     }
@@ -191,7 +200,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public List<RequestItem> getRequests(){
         List<RequestItem> requestList = new ArrayList<RequestItem>();
-        String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
+        /*String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
         SQLiteDatabase database = getReadableDatabase();
 
         Cursor cursor = null;
@@ -211,6 +220,11 @@ public class DbHandler extends SQLiteOpenHelper {
                 ri.setOrigin(cursor.getString(cursor.getColumnIndex(REQUEST_ORIGIN_FIELD)));
                 requestList.add(ri);
             } while (cursor.moveToNext());
+        }*/
+
+        if (searchParam != ""){
+            RequestItem ri = new RequestItem(0, searchParam, "", "");
+            requestList.add(ri);
         }
 
         return requestList;

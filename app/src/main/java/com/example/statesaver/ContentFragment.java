@@ -80,11 +80,11 @@ public class ContentFragment extends Fragment {
         //DbHandler.getInstance();
         DbHandler dbHandler = DbHandler.getInstance(getContext());
         List<ContentData> contents = dbHandler.getContents();
-        Log.d("AAAAAAAAA", "AAAAAAAAAAAAAAa");
+        Log.d(MainActivity.TAG, "AAAAAAAAAAAAAAa");
         for (ContentData cd : contents) {
            String fileLocation = cd.getFileLocation();
            String filetype = cd.getFileType();
-            Log.d("ADDING CONTENT", "onCreateView: ");
+            Log.d(MainActivity.TAG, "onCreateView: ");
         }
 
         ArrayList<ContentData> list = new ArrayList<ContentData>();

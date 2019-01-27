@@ -17,4 +17,11 @@ public class RequestItem {
 
     public String getOrigin() {return origin;}
     public void setOrigin(String origin) {this.origin = origin; }
+
+    public RequestItem(String requestId, String request, String lastHop, String origin){
+        this.requestId = requestId;
+        this.request = request;
+        this.lastHop = lastHop;
+        this.origin = origin;
+    }
 }
