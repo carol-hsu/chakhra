@@ -42,6 +42,7 @@ import com.example.statesaver.utils.Configuration;
 import com.example.statesaver.utils.DataTransferManager;
 import com.example.statesaver.utils.DbHandler;
 import com.example.statesaver.utils.IdManager;
+import com.example.statesaver.utils.PageSaver;
 import com.example.statesaver.utils.ServerDataManager;
 
 import java.io.ByteArrayInputStream;
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity
         WifiP2pManager.ConnectionInfoListener,
         CommunityFragment.OnFragmentInteractionListener,
         Handler.Callback {
+
+    private PageSaver ps;
 
     private Thread rqHander;
 
@@ -102,6 +105,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar = toolbar;
         setSupportActionBar(toolbar);
+
+        ps = new PageSaver();
 
         /** Wifi P2P stuff starts */
         intentFilter = new IntentFilter();
@@ -366,10 +371,49 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "Received file");
     }
 
-    private void handleRequest(String requestId, String searchRequest) {
-        Log.d(TAG, "Received request " + searchRequest);
+    private String[] dummy_run(String query){
+        System.out.println("Get:" + query);
+        String[] python_loop_urls = { "https://www.w3schools.com/python/python_for_loops.asp",
+                "https://wiki.python.org/moin/ForLoop",
+                "https://www.geeksforgeeks.org/loops-in-python/"};
+        String[] java_class_urls = { "https://www.geeksforgeeks.org/classes-objects-java/",
+                "https://www.w3schools.com/java/java_classes.asp",
+                "https://www.programiz.com/java-programming/class-objects"};
+        if(query.toLowerCase().contains("python"))
+            return python_loop_urls;
+
+        return java_class_urls;
     }
 
+    public void sendFileOverP2P(byte[] bytes, String filename, String requestId) {
+        Log.d(TAG, "Trying to send file = "+ filename + " of size " + bytes.length);
+        if (dataTransferManager == null) {
+            Log.e(TAG, "Data transfer manager is null");
+            return;
+        }
+        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.FILE, bytes, filename, requestId);
+        new AsyncWriter(dataTransferManager).execute(p2pmsg);
+    }
+
+    public void handleRequest(String requestId, String searchRequest) {
+        Log.d(TAG, "Received request " + searchRequest);
+
+        (new UrlFetcher()).execute(searchRequest, requestId);
+
+    }
+
+    public class UrlFetcher extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String[] urls = dummy_run(strings[0]);
+            String requestId = strings[1];
+            String content = ps.downloadHtmlAndParseLinks(urls[0],"aaa", false);
+            byte[] bytes = content.getBytes();
+            sendFileOverP2P(bytes, "web.html", requestId);
+            return "";
+        }
+    }
 
     public class AsyncWriter extends AsyncTask<P2pMessage, Integer, String> {
 

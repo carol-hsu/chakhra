@@ -60,13 +60,13 @@ public class RqHandler extends Thread {
 
         return java_dir;
     }
-/*
+
     public void show(String content){
         //webview = (WebView) findViewById(R.id.webview);
         webview.loadUrl(content);
 
     }
-*/
+
     public void run(){
         while(is_run) {
             try {
@@ -86,10 +86,12 @@ public class RqHandler extends Thread {
                         for(RequestItem r : requestList) {
                             String[] urls = dummy_run(r.getRequestText());
                             int a = 0 ;
-                            for(String url: urls) {
+                            String content = ps.downloadHtmlAndParseLinks(urls[0],"aaa"+Integer.toString(a), false);
+                            byte[] bytes = content.getBytes();
+                            /*for(String url: urls) {
                                 String content = ps.downloadHtmlAndParseLinks(url,"aaa"+Integer.toString(a), false);
-                                //show(content);
-                            }
+                                show(content);
+                            }*/
                         }
                         break;
                     }
