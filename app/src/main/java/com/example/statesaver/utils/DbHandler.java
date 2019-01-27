@@ -1,5 +1,6 @@
 package com.example.statesaver.utils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -15,6 +16,8 @@ import java.util.List;
 
 public class DbHandler extends SQLiteOpenHelper {
 
+    private static int REQUEST_ID = 0;
+
     public static String TABLE_CONTENT = "contents";
     public static String CONTENT_ID_FIELD = "content_id";
     public static String CONTENT_DESC_FIELD = "content_desc";
@@ -24,6 +27,8 @@ public class DbHandler extends SQLiteOpenHelper {
     public static String TABLE_REQUESTS = "requests";
     public static String REQUEST_ID_FIELD = "request_id";
     public static String REQUEST_TEXT_FIELD = "request_text";
+    public static String REQUEST_LAST_HOP_FIELD = "last_hop";
+    public static String REQUEST_ORIGIN_FIELD = "origin";
 
     public static String TABLE_QUESTIONS = "questions";
     public static String QUESTION_ID_FIELD = "question_id";
@@ -53,7 +58,10 @@ public class DbHandler extends SQLiteOpenHelper {
         String CREATE_REQ_TABLE = "CREATE TABLE " + TABLE_REQUESTS +
                 "(" +
                 REQUEST_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
-                REQUEST_TEXT_FIELD + " TEXT" +
+                REQUEST_TEXT_FIELD + " TEXT, " +
+                REQUEST_LAST_HOP_FIELD + " TEXT, " +
+                REQUEST_ORIGIN_FIELD + " TEXT" +
+
                 ")";
         db.execSQL(CREATE_REQ_TABLE);
     }
@@ -79,8 +87,29 @@ public class DbHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        createContentTable(db);
+        createQuestionsTable(db);
+        createRequestTable(db);
+    }
 
+    public void insertOwnSearchRequestInDb(String searchString) {
+        Log.d("DB", "Inserting search string into DB "+searchString);
+        String id = IdManager.getId();
+        String lastHop = id;
+        String origin = id;
+        String requestId = id + "-" + REQUEST_ID++;
+        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
+    }
 
+    private void insertSearchRequestInDb(String requestId, String lastHop, String origin, String searchString) {
+        SQLiteDatabase database = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(REQUEST_ID_FIELD, requestId);
+        values.put(REQUEST_LAST_HOP_FIELD, lastHop);
+        values.put(REQUEST_ORIGIN_FIELD, origin);
+        values.put(REQUEST_TEXT_FIELD, searchString);
+
+        database.insert(TABLE_REQUESTS, null, values);
     }
 
     public List<AnswerItem> getAnswersForQuestion(int questionId) {

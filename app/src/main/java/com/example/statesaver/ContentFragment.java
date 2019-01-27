@@ -87,9 +87,15 @@ public class ContentFragment extends Fragment {
             Log.d("ADDING CONTENT", "onCreateView: ");
         }
 
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("item1");
-        list.add("item2");
+        ArrayList<ContentData> list = new ArrayList<ContentData>();
+        for (int i = 0; i < 5; i++) {
+            ContentData data = new ContentData();
+            data.setDesc("Desc "+i);
+            data.setId(i);
+            data.setFileLocation("Location "+i);
+            data.setFileType("type "+i);
+            list.add(data);
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_content, container, false);
 

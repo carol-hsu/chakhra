@@ -13,13 +13,13 @@
 
     <Button android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter"
+        android:text="Read"
         android:layout_gravity="center"
         android:id="@+id/content_read_button"/>
 
     <Button android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear"
+        android:text="Delete"
         android:id="@+id/content_delete_button"
         android:layout_gravity="bottom"/>
 </LinearLayout>

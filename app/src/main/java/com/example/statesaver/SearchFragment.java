@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.statesaver.utils.DbHandler;
 
 
 /**
@@ -60,11 +64,31 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    private void searchButtonClicked(String searchString) {
+        if (searchString.compareTo("") == 0) {
+            return;
+        }
+        insertSearchRequestInDb(searchString);
+    }
+
+    private void insertSearchRequestInDb(String searchString) {
+        DbHandler.getInstance(getContext()).insertOwnSearchRequestInDb(searchString);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_search, container, false);
+        Button searchButton = rootView.findViewById(R.id.search_button);
+        final TextView text = rootView.findViewById(R.id.search_textbox);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchButtonClicked(text.getText().toString());
+            }
+        });
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

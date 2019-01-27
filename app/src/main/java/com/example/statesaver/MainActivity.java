@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.statesaver.utils.DbHandler;
+import com.example.statesaver.utils.IdManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        IdManager.initialize("UNIQUE_ID"); // TODO Make this unique ! Duh !
 
         Fragment fragment = null;
         Class fragmentClass = null;
@@ -130,4 +133,7 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
+
 }

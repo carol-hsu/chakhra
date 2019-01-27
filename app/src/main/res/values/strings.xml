@@ -12,4 +12,5 @@
     <string name="really_long_string">This is a long string</string>
     <string name="content_resource_view_button">View Resource</string>
     <string name="title_activity_qa">QaActivity</string>
+    <string name="title_activity_view">ViewActivity</string>
 </resources>
