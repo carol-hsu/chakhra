@@ -1,6 +1,7 @@
 package com.example.statesaver.types;
 
 public class RequestItem {
+
     private String requestId;
     private String request;
     private String lastHop;
@@ -9,8 +10,8 @@ public class RequestItem {
     public String getRequestId() { return requestId; }
     public void setRequestId(String requestId) {this.requestId = requestId; }
 
-    public String getRequest() {return request; }
-    public void setRequest(String request) {this.request = request; }
+    public String getRequestText() {return request; }
+    public void setRequestText(String requestText) {this.request = requestText; }
 
     public String getLastHop() {return lastHop; }
     public void setLastHop(String lastHop) {this.lastHop = lastHop; }

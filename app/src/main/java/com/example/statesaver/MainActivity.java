@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -299,12 +298,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void sendRequestOverP2P(RequestItem requestItem) {
-        Log.d(TAG, "Trying to send msg = "+ requestItem.getRequest());
+        Log.d(TAG, "Trying to send msg = "+ requestItem.getRequestText());
         if (dataTransferManager == null) {
             Log.e(TAG, "Data transfer manager is null");
             return;
         }
-        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, requestItem.getRequest(), requestItem.getRequestId());
+        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, requestItem.getRequestText(), requestItem.getRequestId());
         new AsyncWriter(dataTransferManager).execute(p2pmsg);
     }
 

@@ -1,6 +1,8 @@
 package com.example.statesaver;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -64,10 +66,12 @@ public class SearchFragment extends Fragment {
         }
     }
 
+
     private void searchButtonClicked(String searchString) {
         if (searchString.compareTo("") == 0) {
             return;
         }
+
         insertSearchRequestInDb(searchString);
     }
 
