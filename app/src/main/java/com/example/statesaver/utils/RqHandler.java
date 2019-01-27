@@ -13,9 +13,11 @@ public class RqHandler extends Thread {
     private DbHandler dbHandler;
     private boolean is_run = false;
     private ConnectivityManager connectManager;
+    private MainActivity mainActivity;
 
-    public RqHandler(Context context){
+    public RqHandler(Context context, MainActivity mainActivity){
         is_run = true;
+        this.mainActivity = mainActivity;
         dbHandler = DbHandler.getInstance(context);
         connectManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
@@ -41,9 +43,11 @@ public class RqHandler extends Thread {
                 if(!requestList.isEmpty()) {
                     Log.d(MainActivity.TAG, "Search request recieved ...");
 //                    System.out.println("it has: "+requestList.size()+" items");
-                    Log.d(MainActivity.TAG, "has internet : " + hasInternet());
+                    Log.d(MainActivity.TAG, "Has internet : " + hasInternet());
                     if(!hasInternet()){
-                        Log.d(MainActivity.TAG, "No connect");
+                        Log.d(MainActivity.TAG, "Need to request p2p");
+                        this.mainActivity.sendRequestOverP2P(requestList.get(0));
+                        dbHandler.insertOwnSearchRequestInDb("");
                     }else{
                         Log.d(MainActivity.TAG, "Have internet, must download the content");
                     }

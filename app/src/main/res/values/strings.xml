@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">StateSaver</string>
+    <string name="app_name">Charkha</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">George P. Burdell</string>
@@ -13,4 +13,13 @@
     <string name="content_resource_view_button">View Resource</string>
     <string name="title_activity_qa">QaActivity</string>
     <string name="title_activity_view">ViewActivity</string>
+
+    <!-- Toolbar titles when navigation menu item is selected -->
+    <string-array name="nav_item_activity_titles">
+        <item>Search Content</item>
+        <item>My Content</item>
+        <item>Get Help</item>
+        <item>Community Trends</item>
+    </string-array>
+
 </resources>
