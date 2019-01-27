@@ -1,10 +1,12 @@
 package com.example.statesaver.utils;
 
+import com.example.statesaver.MainActivity;
 import com.example.statesaver.types.RequestItem;
 import java.util.List;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public class RqHandler extends Thread {
 
@@ -37,10 +39,17 @@ public class RqHandler extends Thread {
                 //check request DB
                 List<RequestItem> requestList = dbHandler.getRequests();
                 if(!requestList.isEmpty()) {
-                    System.out.println("it has: "+requestList.size()+" items");
+                    Log.d(MainActivity.TAG, "Search request recieved ...");
+//                    System.out.println("it has: "+requestList.size()+" items");
+                    Log.d(MainActivity.TAG, "has internet : " + hasInternet());
                     if(!hasInternet()){
-                        System.out.println("No connect");
+                        Log.d(MainActivity.TAG, "No connect");
+                    }else{
+                        Log.d(MainActivity.TAG, "Have internet, must download the content");
                     }
+                }else{
+                    Log.d(MainActivity.TAG, "Thread is waiting ...");
+                    
                 }
 
             } catch (Exception e) {

@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity
         WifiP2pManager.ConnectionInfoListener,
         Handler.Callback {
 
+    private Thread rqHander;
+
     public static String TAG = "MainActivity";
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 1001;
 
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         registerReceiver(receiver, intentFilter);
         manager.requestConnectionInfo(channel, this);
 
-        Thread rqHander = new RqHandler(getApplicationContext());
+        rqHander = new RqHandler(getApplicationContext());
         rqHander.start();
     }
 

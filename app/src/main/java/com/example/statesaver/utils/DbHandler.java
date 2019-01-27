@@ -19,6 +19,7 @@ import java.util.UUID;
 
 public class DbHandler extends SQLiteOpenHelper {
 
+    public String searchParam = ""; //hack string to bypass adding entry to the database request table
     private static int REQUEST_ID = 0;
 
     public static String TABLE_CONTENT = "contents";
@@ -116,15 +117,17 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public void insertOwnSearchRequestInDb(String searchString) {
         Log.d("DB", "Inserting search string into DB "+searchString);
-        String id = IdManager.getId();
-        String lastHop = id;
-        String origin = id;
-        String requestId = id + "-" + UUID.randomUUID().toString() + REQUEST_ID++ ;
-        Log.d("DB", "id = "+id);
-        Log.d("DB", "lastHop = "+lastHop);
-        Log.d("DB", "origin = "+origin);
-        Log.d("DB", "reqId = "+requestId);
-        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
+//        String id = IdManager.getId();
+//        String lastHop = id;
+//        String origin = id;
+//        String requestId = id + "-" + UUID.randomUUID().toString() + REQUEST_ID++ ;
+//        Log.d("DB", "id = "+id);
+//        Log.d("DB", "lastHop = "+lastHop);
+//        Log.d("DB", "origin = "+origin);
+//        Log.d("DB", "reqId = "+requestId);
+//        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
+
+        searchParam = searchString;
     }
 
     private void insertSearchRequestInDb(String requestId, String lastHop, String origin, String searchString) {
@@ -189,7 +192,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
     public List<RequestItem> getRequests(){
         List<RequestItem> requestList = new ArrayList<RequestItem>();
-        String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
+        /*String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
         SQLiteDatabase database = getReadableDatabase();
 
         Cursor cursor = null;
@@ -209,6 +212,11 @@ public class DbHandler extends SQLiteOpenHelper {
                 ri.setOrigin(cursor.getString(cursor.getColumnIndex(REQUEST_ORIGIN_FIELD)));
                 requestList.add(ri);
             } while (cursor.moveToNext());
+        }*/
+
+        if (searchParam != ""){
+            RequestItem ri = new RequestItem(0, searchParam, "", "");
+            requestList.add(ri);
         }
 
         return requestList;
