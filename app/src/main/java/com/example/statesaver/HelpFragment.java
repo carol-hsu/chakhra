@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.statesaver.types.HelpItem;
 import com.example.statesaver.utils.ContentItemAdapter;
 import com.example.statesaver.utils.HelpItemAdapter;
 
@@ -74,22 +75,39 @@ public class HelpFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
-        final ArrayList<String> list = new ArrayList<String>();
-        list.add("item1");
-        list.add("item2");
+        final ArrayList<String> question_list = new ArrayList<String>();
+        question_list.add("Why my loop function never stop in python?");
+        question_list.add("How to indent my code?");
+        question_list.add("What is the difference between div and span tag?");
+
+        ArrayList<HelpItem> list = new ArrayList<HelpItem>();
+        for (int i = 0; i < 3; i++) {
+            HelpItem data = new HelpItem();
+            data.setQuestion(question_list.get(i));
+
+            int count  = 0;
+            if ( i == 0 ){
+                count = 3;
+            } if ( i == 2) {
+                count = 5;
+            }
+            data.setAnswersCount(count);
+            list.add(data);
+        }
+
 
         HelpItemAdapter adapter = new HelpItemAdapter(list, getActivity());
         ListView lView = rootView.findViewById(R.id.help_list_layout);
         lView.setAdapter(adapter);
-        lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String rowItem = list.get(position);
-                Intent intent = new Intent(getActivity().getApplicationContext(), QaActivity.class);
-                intent.putExtra("questionId", rowItem);
-                startActivity(intent);
-            }
-        });
+//        lView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                String rowItem = list.get(position);
+//                Intent intent = new Intent(getActivity().getApplicationContext(), QaActivity.class);
+//                intent.putExtra("questionId", rowItem);
+//                startActivity(intent);
+//            }
+//        });
         return rootView;
     }
 

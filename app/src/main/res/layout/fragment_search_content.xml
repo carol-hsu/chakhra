@@ -17,16 +17,18 @@
 
             <EditText
                 android:id="@+id/search_textbox"
-                android:layout_width="300dp"
+                android:layout_width="323dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
+                android:paddingLeft="10dp"
                 android:text="Search" />
 
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="wrap_content"
                 android:layout_height="61dp"
+                android:paddingRight="10dp"
                 android:text="Search" />
         </TableRow>
 
@@ -36,7 +38,9 @@
             android:layout_height="76dp"
             android:ems="15"
             android:inputType="textPersonName"
-            android:text="Popular" />
+            android:text="Trends"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -51,14 +55,14 @@
                     android:layout_width="189dp"
                     android:layout_height="141dp"
                     android:baselineAligned="false"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/php" />
 
                 <ImageView
                     android:id="@+id/imageView3"
                     android:layout_width="287dp"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/html" />
 
             </TableRow>
@@ -71,14 +75,14 @@
                     android:id="@+id/imageView4"
                     android:layout_width="189dp"
                     android:layout_height="141dp"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/css" />
 
                 <ImageView
                     android:id="@+id/imageView5"
                     android:layout_width="287dp"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/c" />
             </TableRow>
 
@@ -90,14 +94,14 @@
                     android:id="@+id/imageView4"
                     android:layout_width="189dp"
                     android:layout_height="141dp"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/database" />
 
                 <ImageView
                     android:id="@+id/imageView5"
                     android:layout_width="287dp"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
+                    android:padding="30dp"
                     android:src="@mipmap/ic_launcher" />
             </TableRow>
 

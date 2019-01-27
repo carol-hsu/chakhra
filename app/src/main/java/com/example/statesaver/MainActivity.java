@@ -26,11 +26,9 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ContentFragment.OnFragmentInteractionListener,
         HelpFragment.OnFragmentInteractionListener,
-//        SearchFragment.OnFragmentInteractionListener {
-        SearchContentFragment.OnFragmentInteractionListener {
+        SearchContentFragment.OnFragmentInteractionListener{
 
     public static final String TAG = "MyActivityP2P";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,8 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         Class fragmentClass = null;
-//        fragmentClass = SearchFragment.class;
         fragmentClass = SearchContentFragment.class;
+//        fragmentClass = HelpFragment.class;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
@@ -94,9 +92,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -114,9 +112,12 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_content) {
-            Log.d("MainActivityLog", "Clicked nav content");
+            Log.d(TAG, "Clicked nav content");
             fragmentClass = ContentFragment.class;
         }
+//        else if (id == R.id.nav_community){
+//            fragmentClass = CommunityTrendFragment.class;
+//        }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
