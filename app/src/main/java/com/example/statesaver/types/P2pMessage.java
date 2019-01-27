@@ -11,6 +11,39 @@ public class P2pMessage implements Serializable {
     }
 
     public Type type;
+
+    public byte[] getFileBytes() {
+        return fileBytes;
+    }
+
+    public void setFileBytes(byte[] fileBytes) {
+        this.fileBytes = fileBytes;
+    }
+
+    public String getSearchRequest() {
+        return searchRequest;
+    }
+
+    public void setSearchRequest(String searchRequest) {
+        this.searchRequest = searchRequest;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     byte[] fileBytes;
     String searchRequest;
     String requestId;

@@ -32,7 +32,7 @@ public class DataTransferManager implements Runnable {
         try {
             iStream = socket.getInputStream();
             oStream = socket.getOutputStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[1024000];
             int bytes;
 
             handler.obtainMessage(Configuration.SET_MANAGER, this).sendToTarget();
@@ -47,6 +47,7 @@ public class DataTransferManager implements Runnable {
                         }
 
                         //this method's call is used to call handleMessage's case Configuration.MESSAGE_READ in the MainActivity.
+
                         handler.obtainMessage(Configuration.DATA_READ, bytes, -1, buffer).sendToTarget();
                     }
                 } catch (IOException e) {

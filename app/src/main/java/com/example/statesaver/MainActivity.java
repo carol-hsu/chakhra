@@ -36,7 +36,13 @@ import com.example.statesaver.utils.DbHandler;
 import com.example.statesaver.utils.IdManager;
 import com.example.statesaver.utils.ServerDataManager;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -261,7 +267,6 @@ public class MainActivity extends AppCompatActivity
         }
         P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, msg, "AAA");
         new AsyncWriter(dataTransferManager).execute(p2pmsg);
-        //dataTransferManager.write(msg.getBytes());
     }
 
     @Override
@@ -304,17 +309,43 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean handleMessage(Message msg) {
+        final Object obj = msg.obj;
         switch(msg.what) {
             case Configuration.SET_MANAGER:
-                final Object obj = msg.obj;
                 Log.d(TAG, "SETTING THE TRANSFER MANAGER");
                 dataTransferManager = (DataTransferManager)obj;
                 break;
-            default:
-                Log.d(TAG, "Got something weird");
+            case Configuration.DATA_READ:
+                Log.d(TAG, "Got data");
+                byte[] bytes = (byte[])obj;
+
+                try {
+                    ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+                    ObjectInput in = null;
+                    in = new ObjectInputStream(bis);
+                    Object o = in.readObject();
+                    P2pMessage p2pMsg = (P2pMessage) o;
+
+                    if (p2pMsg.type == P2pMessage.Type.REQUEST) {
+                        handleRequest(p2pMsg.getRequestId(), p2pMsg.getSearchRequest());
+                    } else if (p2pMsg.type == P2pMessage.Type.FILE) {
+                        handleFile(p2pMsg.getFilename(), p2pMsg.getFileBytes(), p2pMsg.getRequestId());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception in parsing bytes to construct p2pmsg");
+                }
+
                 break;
         }
         return false;
+    }
+
+    private void handleFile(String filename, byte[] fileBytes, String requestId) {
+        Log.d(TAG, "Received file");
+    }
+
+    private void handleRequest(String requestId, String searchRequest) {
+        Log.d(TAG, "Received request " + searchRequest);
     }
 
     public class AsyncWriter extends AsyncTask<P2pMessage, Integer, String> {
@@ -327,7 +358,19 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected String doInBackground(P2pMessage... p2pMessages) {
             //this.transferManager.write(p2pMessages[0].getBytes());
-            return "";
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutput out = null;
+            try {
+                out = new ObjectOutputStream(bos);
+                out.writeObject(p2pMessages[0]);
+                out.flush();
+                byte[] yourBytes = bos.toByteArray();
+                this.transferManager.write(yourBytes);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+            } finally {
+                return "";
+            }
         }
     }
 
