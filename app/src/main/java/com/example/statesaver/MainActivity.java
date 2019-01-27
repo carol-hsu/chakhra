@@ -1,5 +1,6 @@
 package com.example.statesaver;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,10 +27,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 import android.widget.TextView;
 
 import com.example.statesaver.types.P2pMessage;
+import com.example.statesaver.types.RequestItem;
 import com.example.statesaver.utils.ClientDataManager;
 import com.example.statesaver.utils.Configuration;
 import com.example.statesaver.utils.DataTransferManager;
@@ -101,6 +105,15 @@ public class MainActivity extends AppCompatActivity
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
 
          /** Wifi P2P stuff starts */
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M  && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, MainActivity.PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION);
+            // After this point you wait for callback in
+            // onRequestPermissionsResult(int, String[], int[]) overridden method
+            Log.d(TAG, "Permission issue!!!");
+
+        }else{
+            Log.d(TAG, "Permission all good");
+        }
 
         IdManager.initialize("UNIQUE_ID"); // TODO Make this unique ! Duh !
 
@@ -129,6 +142,7 @@ public class MainActivity extends AppCompatActivity
 
         DbHandler.getInstance(getApplicationContext());
 
+
     }
 
     /** register the BroadcastReceiver with the intent values to be matched */
@@ -139,7 +153,7 @@ public class MainActivity extends AppCompatActivity
         registerReceiver(receiver, intentFilter);
         manager.requestConnectionInfo(channel, this);
 
-        rqHander = new RqHandler(getApplicationContext());
+        rqHander = new RqHandler(getApplicationContext(), this);
         rqHander.start();
     }
 
@@ -261,13 +275,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void sendP2p(String msg) {
-        Log.d(TAG, "Trying to send msg = "+msg);
+    public void sendRequestOverP2P(RequestItem requestItem) {
+        Log.d(TAG, "Trying to send msg = "+ requestItem.getRequest());
         if (dataTransferManager == null) {
             Log.e(TAG, "Data transfer manager is null");
             return;
         }
-        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, msg, "AAA");
+        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, requestItem.getRequest(), requestItem.getRequestId());
         new AsyncWriter(dataTransferManager).execute(p2pmsg);
     }
 
@@ -284,29 +298,13 @@ public class MainActivity extends AppCompatActivity
             } catch (IOException e) {
                 Log.e(TAG, "IOException during open ServerSockets with port "+Configuration.SERVER_PORT, e);
             }
-
-            /************ TODO DELETE FOLLOWING LINES ****************/
-
-            /*Socket socket = new Socket();
-            socket.bind(null);
-            socket.connect(new InetSocketAddress("127.0.0.1",*/
-                    /*Configuration.SERVER_PORT), Configuration.CLIENT_TIMEOUT);*/
-            //this.clientDataManager = new ClientDataManager(dataHandler, wifiP2pInfo.groupOwnerAddress);
-            this.clientDataManager = new ClientDataManager(dataHandler, wifiP2pInfo.groupOwnerAddress);
-            this.clientDataManager.start();
-
-
-
-
-        } else if (wifiP2pInfo.groupFormed){
+        } else if (wifiP2pInfo.groupFormed) {
             Log.d(TAG, "I am NOT the owner");
-            Socket socket = new Socket();
+            if (this.clientDataManager == null){
+                this.clientDataManager = new ClientDataManager(dataHandler, wifiP2pInfo.groupOwnerAddress);
+                this.clientDataManager.start();
+            }
         }
-                /*socket.bind(null);
-                socket.connect(new InetSocketAddress(wifiP2pInfo.groupOwnerAddress.getHostAddress(),
-                        Configuration.SERVER_PORT), Configuration.CLIENT_TIMEOUT);*/
-            this.clientDataManager = new ClientDataManager(dataHandler, wifiP2pInfo.groupOwnerAddress);
-
     }
 
     @Override
@@ -375,5 +373,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
 
 }
