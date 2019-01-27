@@ -26,7 +26,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.widget.TextView;
 
+import com.example.statesaver.types.P2pMessage;
 import com.example.statesaver.utils.ClientDataManager;
 import com.example.statesaver.utils.Configuration;
 import com.example.statesaver.utils.DataTransferManager;
@@ -39,11 +41,13 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import com.example.statesaver.utils.RqHandler;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ContentFragment.OnFragmentInteractionListener,
         HelpFragment.OnFragmentInteractionListener,
+        SearchContentFragment.OnFragmentInteractionListener,
         SearchFragment.OnFragmentInteractionListener,
         WifiP2pManager.ChannelListener,
         WifiP2pManager.ConnectionInfoListener,
@@ -69,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         this.isWifiP2pEnabled = isWifiP2pEnabled;
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +98,8 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         Class fragmentClass = null;
-        fragmentClass = SearchFragment.class;
+        fragmentClass = SearchContentFragment.class;
+//        fragmentClass = HelpFragment.class;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
@@ -103,14 +109,6 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -123,8 +121,6 @@ public class MainActivity extends AppCompatActivity
 
         DbHandler.getInstance(getApplicationContext());
 
-
-
     }
 
     /** register the BroadcastReceiver with the intent values to be matched */
@@ -134,6 +130,9 @@ public class MainActivity extends AppCompatActivity
         receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
         registerReceiver(receiver, intentFilter);
         manager.requestConnectionInfo(channel, this);
+
+        Thread rqHander = new RqHandler(getApplicationContext());
+        rqHander.start();
     }
 
     @Override
@@ -175,9 +174,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -190,13 +189,17 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
         if (id == R.id.nav_search) {
-            fragmentClass = SearchFragment.class;
+//            fragmentClass = SearchFragment.class;
+            fragmentClass = SearchContentFragment.class;
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_content) {
-            Log.d("MainActivityLog", "Clicked nav content");
+            Log.d(TAG, "Clicked nav content");
             fragmentClass = ContentFragment.class;
         }
+//        else if (id == R.id.nav_community){
+//            fragmentClass = CommunityTrendFragment.class;
+//        }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -256,7 +259,8 @@ public class MainActivity extends AppCompatActivity
             Log.e(TAG, "Data transfer manager is null");
             return;
         }
-        new AsyncWriter(dataTransferManager).execute(msg);
+        P2pMessage p2pmsg = new P2pMessage(P2pMessage.Type.REQUEST, msg, "AAA");
+        new AsyncWriter(dataTransferManager).execute(p2pmsg);
         //dataTransferManager.write(msg.getBytes());
     }
 
@@ -313,7 +317,7 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    public class AsyncWriter extends AsyncTask<String, Integer, String> {
+    public class AsyncWriter extends AsyncTask<P2pMessage, Integer, String> {
 
         DataTransferManager transferManager;
         AsyncWriter(DataTransferManager transferManager) {
@@ -321,12 +325,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        protected String doInBackground(String... strings) {
-            this.transferManager.write(strings[0].getBytes());
+        protected String doInBackground(P2pMessage... p2pMessages) {
+            //this.transferManager.write(p2pMessages[0].getBytes());
             return "";
         }
-
-
     }
 
 }

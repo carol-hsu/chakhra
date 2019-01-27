@@ -8,27 +8,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.example.statesaver.types.ContentData;
-import com.example.statesaver.utils.ContentItemAdapter;
 import com.example.statesaver.utils.DbHandler;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ContentFragment.OnFragmentInteractionListener} interface
+ * {@link SearchContentFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ContentFragment#newInstance} factory method to
+ * Use the {@link SearchContentFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ContentFragment extends Fragment {
+public class SearchContentFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -40,7 +34,7 @@ public class ContentFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ContentFragment() {
+    public SearchContentFragment() {
         // Required empty public constructor
     }
 
@@ -50,11 +44,11 @@ public class ContentFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ContentFragment.
+     * @return A new instance of fragment SearchContentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ContentFragment newInstance(String param1, String param2) {
-        ContentFragment fragment = new ContentFragment();
+    public static SearchContentFragment newInstance(String param1, String param2) {
+        SearchContentFragment fragment = new SearchContentFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -75,35 +69,31 @@ public class ContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        // Need to read the SQLite database to get contents already stored
-        //DbHandler.getInstance();
-        DbHandler dbHandler = DbHandler.getInstance(getContext());
-        List<ContentData> contents = dbHandler.getContents();
-        Log.d(MainActivity.TAG, "AAAAAAAAAAAAAAa");
-        for (ContentData cd : contents) {
-           String fileLocation = cd.getFileLocation();
-           String filetype = cd.getFileType();
-            Log.d(MainActivity.TAG, "onCreateView: ");
-        }
-
-        ArrayList<ContentData> list = new ArrayList<ContentData>();
-        for (int i = 0; i < 5; i++) {
-            ContentData data = new ContentData();
-            data.setDesc("Desc "+i);
-            data.setId(i);
-            data.setFileLocation("Location "+i);
-            data.setFileType("type "+i);
-            list.add(data);
-        }
-
-        View rootView = inflater.inflate(R.layout.fragment_content, container, false);
-
-        ContentItemAdapter adapter = new ContentItemAdapter(list, getActivity());
-        ListView lView = rootView.findViewById(R.id.content_row_layout);
-        lView.setAdapter(adapter);
-
+        //return inflater.inflate(R.layout.fragment_search_content, container, false);
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_search_content, container, false);
+        Button searchButton = rootView.findViewById(R.id.search_button);
+        final TextView text = rootView.findViewById(R.id.search_textbox);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchButtonClicked(text.getText().toString());
+            }
+        });
         return rootView;
+    }
+
+    private void searchButtonClicked(String searchString) {
+        if (searchString.compareTo("") == 0) {
+            return;
+        }
+        insertSearchRequestInDb(searchString);
+    }
+
+    private void insertSearchRequestInDb(String searchString) {
+        Log.d(MainActivity.TAG, "adding to database : " + searchString);
+        // TODO DbHandler.getInstance(getContext()).insertOwnSearchRequestInDb(searchString);
+        ((MainActivity) getActivity()).sendP2p(searchString);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -10,6 +10,7 @@ import android.util.Log;
 import com.example.statesaver.types.AnswerItem;
 import com.example.statesaver.types.ContentData;
 import com.example.statesaver.types.HelpItem;
+import com.example.statesaver.types.RequestItem;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -26,6 +27,17 @@ public class DbHandler extends SQLiteOpenHelper {
     public static String CONTENT_FILE_LOC_FIELD = "content_file";
     public static String CONTENT_FILE_TYPE_FIELD = "content_file_type";
 
+    //Content = save_to_offline DB
+    //public static final String DATABASE_NAME="SavedPagesMeta.db";
+/*    public static final String TABLE_CONTENT="contents";
+    public static final String TITLE="title";
+    public static final String FILE_LOCATION="file_location";
+    public static final String THUMBNAIL="thumbnail";
+    public static final String ORIGINAL_URL="origurl";
+    public static final String CONTENT_ID="_id";
+    public static final String TIMESTAMP="timestamp";
+    public static final String SAVED_PAGE_BASE_DIRECTORY="tags";
+*/
     public static String TABLE_REQUESTS = "requests";
     public static String REQUEST_ID_FIELD = "request_id";
     public static String REQUEST_TEXT_FIELD = "request_text";
@@ -83,6 +95,14 @@ public class DbHandler extends SQLiteOpenHelper {
                 CONTENT_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
                 CONTENT_FILE_LOC_FIELD + " TEXT, " +
                 CONTENT_FILE_TYPE_FIELD + " TEXT " +
+/*
+                CONTENT_ID+" INTEGER PRIMARY KEY, "
+                +TITLE+" TEXT, "
+                +FILE_LOCATION+" TEXT, "
+                +THUMBNAIL+" TEXT, "
+                +ORIGINAL_URL+" TEXT, "
+                +SAVED_PAGE_BASE_DIRECTORY+" TEXT, "
+                +TIMESTAMP+" TEXT DEFAULT CURRENT_TIMESTAMP" + */
                 ")";
         db.execSQL(CREATE_CONTENT_TABLE);
     }
@@ -167,6 +187,34 @@ public class DbHandler extends SQLiteOpenHelper {
         return questionsList;
     }
 
+    public List<RequestItem> getRequests(){
+        List<RequestItem> requestList = new ArrayList<RequestItem>();
+        String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
+        SQLiteDatabase database = getReadableDatabase();
+
+        Cursor cursor = null;
+        try {
+            cursor = database.rawQuery(readRequestsQuery, null);
+        } catch (Exception e) {
+            Log.e("DB", "Error accessing contents table");
+        }
+        if (cursor == null)
+            return requestList;
+        if (cursor.moveToFirst()) {
+            do {
+                RequestItem ri = new RequestItem();
+                ri.setRequestId(cursor.getInt(cursor.getColumnIndex(REQUEST_ID_FIELD)));
+                ri.setRequest(cursor.getString(cursor.getColumnIndex(REQUEST_TEXT_FIELD)));
+                ri.setLastHop(cursor.getString(cursor.getColumnIndex(REQUEST_LAST_HOP_FIELD)));
+                ri.setOrigin(cursor.getString(cursor.getColumnIndex(REQUEST_ORIGIN_FIELD)));
+                requestList.add(ri);
+            } while (cursor.moveToNext());
+        }
+
+        return requestList;
+    }
+
+/* TODO: update getContents to real data */
     public List<ContentData> getContents() {
         List<ContentData> contentList = new ArrayList<ContentData>();
         String readContentsQuery = "SELECT * FROM " + TABLE_CONTENT;

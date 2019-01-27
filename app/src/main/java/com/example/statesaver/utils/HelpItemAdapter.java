@@ -1,6 +1,7 @@
 package com.example.statesaver.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,17 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.statesaver.MainActivity;
 import com.example.statesaver.R;
+import com.example.statesaver.types.HelpItem;
 
 import java.util.ArrayList;
 
 public class HelpItemAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<HelpItem> list = new ArrayList<HelpItem>();
     private Context context;
 
-    public HelpItemAdapter(ArrayList<String> list, Context context) {
+    public HelpItemAdapter(ArrayList<HelpItem> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -46,10 +49,16 @@ public class HelpItemAdapter extends BaseAdapter implements ListAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.help_row, null);
         }
+        HelpItem hi = list.get(position);
 
         //Handle TextView and display string from your list
         TextView listItemText = (TextView)view.findViewById(R.id.help_text);
-        listItemText.setText(list.get(position));
+        listItemText.setText(hi.getQuestion());
+
+        //Handle TextView and display string from your list
+        TextView listItemCountText = (TextView)view.findViewById(R.id.count_text);
+        listItemCountText.setText(""+hi.getAnswersCount());
+
 
         return view;
     }

@@ -22,6 +22,8 @@ public class P2pMessage implements Serializable {
     }
 
     public P2pMessage(Type type, String searchRequest, String requestId) {
-
+        this.type = type;
+        this.searchRequest = searchRequest;
+        this.requestId = requestId;
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 public class HelpItem {
     int questionId;
+    int answersCount;
     private String question;
     private List<AnswerItem> answers;
 
@@ -31,5 +32,8 @@ public class HelpItem {
         this.answers = answers;
     }
 
+    public int getAnswersCount(){ return answersCount;}
+
+    public void setAnswersCount(int count) { this.answersCount = count;}
 
 }

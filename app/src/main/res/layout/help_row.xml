@@ -3,11 +3,25 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/help_text"
+        android:layout_width="333dp"
+        android:layout_height="74dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="9dp"
+        android:paddingTop="10dp"
         android:text="Question "
-        android:id="@+id/help_text"></TextView>
+        android:textColor="@android:color/black"
+        android:textSize="18sp"></TextView>
+
+    <TextView
+        android:id="@+id/count_text"
+        android:layout_width="115dp"
+        android:layout_height="74dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:paddingLeft="5dp"
+        android:paddingTop="2dp"
+        android:text="0 " ></TextView>
 </LinearLayout>
