@@ -89,8 +89,8 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //searchButtonClicked(text.getText().toString());
-                ((MainActivity)getActivity()).sendP2p("P2p text to be sent");
+                searchButtonClicked(text.getText().toString());
+                //((MainActivity)getActivity()).sendP2p("P2p text to be sent");
             }
         });
         return rootView;

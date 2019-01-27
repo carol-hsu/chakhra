@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 
 public class PageSaver {
-    private EventCallback eventCallback;
+    //private EventCallback eventCallback;
 
     private OkHttpClient client = new OkHttpClient();
     private final String HTTP_REQUEST_TAG = "TAG";
@@ -59,8 +59,8 @@ public class PageSaver {
         return this.title;
     }
 
-    public PageSaver(EventCallback callback) {
-        this.eventCallback = callback;
+    public PageSaver() {
+        //this.eventCallback = callback;
 
         client.setConnectTimeout(20, TimeUnit.SECONDS);
         client.setReadTimeout(20, TimeUnit.SECONDS);
@@ -142,7 +142,7 @@ public class PageSaver {
         return success;
     }
 */
-    private boolean downloadHtmlAndParseLinks(final String url, final String outputDir, final boolean isExtra) {
+    public String downloadHtmlAndParseLinks(final String url, final String outputDir, final boolean isExtra) {
         //isExtra should be true when saving a html frame file.
         String filename;
 
@@ -163,19 +163,19 @@ public class PageSaver {
             //eventCallback.onProgressMessage(isExtra ? "Processing HTML frame file: " + filename: "Processing main HTML file");
             htmlContent = parseHtmlForLinks(htmlContent, baseUrl);
 
-            eventCallback.onProgressMessage(isExtra ? "Saving HTML frame file: " + filename: "Saving main HTML file");
-            File outputFile = new File(outputDir, filename);
-            saveStringToFile(htmlContent, outputFile);
-            return true;
+            //eventCallback.onProgressMessage(isExtra ? "Saving HTML frame file: " + filename: "Saving main HTML file");
+            //File outputFile = new File(outputDir, filename);
+            //saveStringToFile(htmlContent, outputFile);
+            return htmlContent;
 
         } catch (IOException | IllegalStateException e) {
-            if (isExtra) {
+            /*if (isExtra) {
                 eventCallback.onError(e);
             } else {
                 eventCallback.onFatalError(e, url);
-            }
+            }*/
             e.printStackTrace();
-            return false;
+            return "";
         }
     }
 /*
@@ -293,20 +293,20 @@ public class PageSaver {
 
         if (title.isEmpty()) {
             title = document.title();
-            eventCallback.onPageTitleAvailable(title);
+            //eventCallback.onPageTitleAvailable(title);
         }
-
+        /*
         if (pageIconUrl.isEmpty()) {
             eventCallback.onProgressMessage("Getting icon...");
             pageIconUrl = FaviconFetcher.getInstance().getFaviconUrl(document);
         }
-
-        eventCallback.onProgressMessage("Processing HTML...");
+        */
+        //eventCallback.onProgressMessage("Processing HTML...");
 
         String urlToGrab;
 
         Elements links;
-
+        /*
         if (getOptions().saveFrames()) {
             links = document.select("frame[src]");
             eventCallback.onLogMessage("Got " + links.size() + " frames");
@@ -328,8 +328,9 @@ public class PageSaver {
                 link.attr("src", replacedURL);
             }
         }
-
+        */
         if (getOptions().saveOther()) {
+            /*
             // Get all the links
             links = document.select("link[href]");
             eventCallback.onLogMessage("Got " + links.size() + " link elements with a href attribute");
@@ -346,10 +347,10 @@ public class PageSaver {
                 String replacedURL = getFileName(urlToGrab);
                 link.attr("href", replacedURL);
             }
-
+            */
             //get links in embedded css also, and modify the links to point to local files
             links = document.select("style[type=text/css]");
-            eventCallback.onLogMessage("Got " + links.size() + " embedded stylesheets, parsing CSS");
+            //eventCallback.onLogMessage("Got " + links.size() + " embedded stylesheets, parsing CSS");
             for (Element link : links) {
                 String cssToParse = link.data();
                 String parsedCss = parseCssForLinks(cssToParse, baseUrl);
@@ -360,7 +361,7 @@ public class PageSaver {
 
             //get input types with an image type
             links = document.select("input[type=image]");
-            eventCallback.onLogMessage("Got " + links.size() + " input elements with type = image");
+            //eventCallback.onLogMessage("Got " + links.size() + " input elements with type = image");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -370,7 +371,7 @@ public class PageSaver {
 
             //get everything which has a background attribute
             links = document.select("[background]");
-            eventCallback.onLogMessage("Got " + links.size() + " elements with a background attribute");
+            //eventCallback.onLogMessage("Got " + links.size() + " elements with a background attribute");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -379,7 +380,7 @@ public class PageSaver {
             }
 
             links = document.select("[style]");
-            eventCallback.onLogMessage("Got " + links.size() + " elements with a style attribute, parsing CSS");
+            //eventCallback.onLogMessage("Got " + links.size() + " elements with a style attribute, parsing CSS");
             for (Element link : links) {
                 String cssToParse = link.attr("style");
                 String parsedCss = parseCssForLinks(cssToParse, baseUrl);
@@ -390,7 +391,7 @@ public class PageSaver {
 
         if (getOptions().saveScripts()) {
             links = document.select("script[src]");
-            eventCallback.onLogMessage("Got " + links.size() + " script elements");
+            //eventCallback.onLogMessage("Got " + links.size() + " script elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -401,7 +402,7 @@ public class PageSaver {
 
         if (getOptions().saveImages()) {
             links = document.select("img[src]");
-            eventCallback.onLogMessage("Got " + links.size() + " image elements");
+            //eventCallback.onLogMessage("Got " + links.size() + " image elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -412,7 +413,7 @@ public class PageSaver {
             }
 
             links = document.select("img[data-canonical-src]");
-            eventCallback.onLogMessage("Got " + links.size() + " image elements, w. data-canonical-src");
+            //eventCallback.onLogMessage("Got " + links.size() + " image elements, w. data-canonical-src");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:data-canonical-src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -426,7 +427,7 @@ public class PageSaver {
         if (getOptions().saveVideo()) {
             //video src is sometimes in a child element
             links = document.select("video:not([src])");
-            eventCallback.onLogMessage("Got " + links.size() + " video elements without src attribute");
+            //eventCallback.onLogMessage("Got " + links.size() + " video elements without src attribute");
             for (Element link : links.select("[src]")) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -436,7 +437,7 @@ public class PageSaver {
             }
 
             links = document.select("video[src]");
-            eventCallback.onLogMessage("Got " + links.size() + " video elements");
+            //eventCallback.onLogMessage("Got " + links.size() + " video elements");
             for (Element link : links) {
                 urlToGrab = link.attr("abs:src");
                 addLinkToList(urlToGrab, filesToGrab);
@@ -449,7 +450,7 @@ public class PageSaver {
         if (getOptions().makeLinksAbsolute()) {
             //make links absolute, so they are not broken
             links = document.select("a[href]");
-            eventCallback.onLogMessage("Making " + links.size() + " links absolute");
+            //eventCallback.onLogMessage("Making " + links.size() + " links absolute");
             for (Element link : links) {
                 String absUrl = link.attr("abs:href");
                 link.attr("href", absUrl);
@@ -458,14 +459,14 @@ public class PageSaver {
         return document.outerHtml();
     }
 
-/*    private String parseCssForLinks(String cssToParse, String baseUrl) {
+    private String parseCssForLinks(String cssToParse, String baseUrl) {
 
         String patternString = "url(\\s*\\(\\s*['\"]*\\s*)(.*?)\\s*['\"]*\\s*\\)"; //I hate regexes...
 
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(cssToParse);
 
-        eventCallback.onLogMessage("Parsing CSS");
+        //eventCallback.onLogMessage("Parsing CSS");
 
         //find everything inside url(" ... ")
         while (matcher.find()) {
@@ -527,7 +528,7 @@ public class PageSaver {
             list.add(link);
         }
     }
-*/
+
     private String getFileName(String url) {
 
         String filename = url.substring(url.lastIndexOf('/') + 1);
@@ -551,11 +552,12 @@ public class PageSaver {
         e.shutdown();
         try {
             if (!e.awaitTermination(waitTime, waitTimeUnit)) {
-                eventCallback.onError("Executor pool did not termimate after " + waitTime + " " + waitTimeUnit.toString() +", doing shutdownNow()");
+                //eventCallback.onError("Executor pool did not termimate after " + waitTime + " " + waitTimeUnit.toString() +", doing shutdownNow()");
                 e.shutdownNow();
             }
         } catch (InterruptedException ie) {
-            eventCallback.onError(ie);
+            //eventCallback.onError(ie);
+            System.out.println(e.toString());
         }
     }
 
@@ -571,7 +573,7 @@ public class PageSaver {
                 return true;
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
-                eventCallback.onError(ie);
+                //eventCallback.onError(ie);
 
                 return false;
             }

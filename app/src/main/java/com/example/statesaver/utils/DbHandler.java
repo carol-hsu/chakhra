@@ -223,7 +223,7 @@ public class DbHandler extends SQLiteOpenHelper {
         }*/
 
         if (searchParam != ""){
-            RequestItem ri = new RequestItem(0, searchParam, "", "");
+            RequestItem ri = new RequestItem("0", searchParam, "", "");
             requestList.add(ri);
         }
 

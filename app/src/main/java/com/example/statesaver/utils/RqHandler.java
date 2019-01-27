@@ -7,17 +7,23 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.webkit.WebView;
 
 public class RqHandler extends Thread {
 
     private DbHandler dbHandler;
     private boolean is_run = false;
     private ConnectivityManager connectManager;
+    private MainActivity mainActivity;
+    private PageSaver ps;
+    private WebView webview;
 
-    public RqHandler(Context context){
+    public RqHandler(Context context, MainActivity mainActivity){
         is_run = true;
+        this.mainActivity = mainActivity;
         dbHandler = DbHandler.getInstance(context);
         connectManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ps = new PageSaver();
     }
 
     private boolean hasInternet(){
@@ -54,7 +60,13 @@ public class RqHandler extends Thread {
 
         return java_dir;
     }
+/*
+    public void show(String content){
+        //webview = (WebView) findViewById(R.id.webview);
+        webview.loadUrl(content);
 
+    }
+*/
     public void run(){
         while(is_run) {
             try {
@@ -64,13 +76,22 @@ public class RqHandler extends Thread {
                 if(!requestList.isEmpty()) {
                     Log.d(MainActivity.TAG, "Search request recieved ...");
 //                    System.out.println("it has: "+requestList.size()+" items");
-                    Log.d(MainActivity.TAG, "has internet : " + hasInternet());
+                    Log.d(MainActivity.TAG, "Has internet : " + hasInternet());
                     if(!hasInternet()){
-                        Log.d(MainActivity.TAG, "No connect");
+                        Log.d(MainActivity.TAG, "Need to request p2p");
+                        this.mainActivity.sendRequestOverP2P(requestList.get(0));
+                        dbHandler.insertOwnSearchRequestInDb("");
                     }else{
                         Log.d(MainActivity.TAG, "Have internet, must download the content");
-
-
+                        for(RequestItem r : requestList) {
+                            String[] urls = dummy_run(r.getRequestText());
+                            int a = 0 ;
+                            for(String url: urls) {
+                                String content = ps.downloadHtmlAndParseLinks(url,"aaa"+Integer.toString(a), false);
+                                show(content);
+                            }
+                        }
+                        break;
                     }
                 }else{
                     Log.d(MainActivity.TAG, "Thread is waiting ...");

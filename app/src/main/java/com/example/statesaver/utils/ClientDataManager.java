@@ -3,6 +3,8 @@ package com.example.statesaver.utils;
 import android.os.Handler;
 import android.util.Log;
 
+import com.example.statesaver.MainActivity;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,17 +43,19 @@ public class ClientDataManager extends Thread {
         socket = new Socket();
         try {
             socket.bind(null);
-            socket.connect(new InetSocketAddress(mAddress.getHostAddress(),
+            String ip = mAddress.getHostAddress();
+//            ip= ip.substring(1);
+            socket.connect(new InetSocketAddress(ip,
                     Configuration.SERVER_PORT), Configuration.CLIENT_TIMEOUT);
-            Log.d(TAG, "Launching the I/O handler");
+            Log.d(MainActivity.TAG, "Launching the I/O handler");
             chat = new DataTransferManager(socket, handler);
             new Thread(chat).start();
         } catch (IOException e) {
-            Log.e(TAG, "IOException throwed by socket", e);
+            Log.e(MainActivity.TAG, "IOException throwed by socket", e);
             try {
                 socket.close();
             } catch (IOException e1) {
-                Log.e(TAG, "IOException during close Socket", e1);
+                Log.e(MainActivity.TAG, "IOException during close Socket", e1);
             }
         }
     }
@@ -65,13 +69,13 @@ public class ClientDataManager extends Thread {
             try {
                 socket.close();
             } catch (IOException e) {
-                Log.e(TAG, "IOException during close Socket", e);
+                Log.e(MainActivity.TAG, "IOException during close Socket", e);
             }
         }
 
         //to interrupt this thread, without the threadpoolexecutor
         if (!this.isInterrupted()) {
-            Log.d(TAG, "Stopping ClientSocketHandler");
+            Log.d(MainActivity.TAG, "Stopping ClientSocketHandler");
             this.interrupt();
         }
     }
