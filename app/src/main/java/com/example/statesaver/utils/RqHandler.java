@@ -88,7 +88,7 @@ public class RqHandler extends Thread {
                             int a = 0 ;
                             for(String url: urls) {
                                 String content = ps.downloadHtmlAndParseLinks(url,"aaa"+Integer.toString(a), false);
-                                show(content);
+                                //show(content);
                             }
                         }
                         break;
