@@ -1,0 +1,136 @@
+diff --git a/app/src/main/java/com/example/statesaver/MainActivity.java b/app/src/main/java/com/example/statesaver/MainActivity.java
+index a0c0c90..35b5bb5 100644
+--- a/app/src/main/java/com/example/statesaver/MainActivity.java
++++ b/app/src/main/java/com/example/statesaver/MainActivity.java
+@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity
+         SearchContentFragment.OnFragmentInteractionListener{
+ 
+     public static final String TAG = "MyActivityP2P";
++    private Thread rqHander;
+ 
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
+         navigationView.setNavigationItemSelectedListener(this);
+ 
+         DbHandler.getInstance(getApplicationContext());
+-        Thread rqHander = new RqHandler(getApplicationContext());
++        rqHander = new RqHandler(getApplicationContext());
+         rqHander.start();
+     }
+ 
+@@ -137,6 +138,10 @@ public class MainActivity extends AppCompatActivity
+ 
+     }
+ 
+-
++    @Override
++    public void onPause() {
++        super.onPause();
++        rqHander.interrupt();
++    }
+ 
+ }
+diff --git a/app/src/main/java/com/example/statesaver/types/RequestItem.java b/app/src/main/java/com/example/statesaver/types/RequestItem.java
+index 677615c..ea0f5dd 100644
+--- a/app/src/main/java/com/example/statesaver/types/RequestItem.java
++++ b/app/src/main/java/com/example/statesaver/types/RequestItem.java
+@@ -17,4 +17,11 @@ public class RequestItem {
+ 
+     public String getOrigin() {return origin;}
+     public void setOrigin(String origin) {this.origin = origin; }
++
++    public RequestItem(int requestId, String request, String lastHop, String origin){
++        this.requestId = requestId;
++        this.request = request;
++        this.lastHop = lastHop;
++        this.origin = origin;
++    }
+ }
+diff --git a/app/src/main/java/com/example/statesaver/utils/DbHandler.java b/app/src/main/java/com/example/statesaver/utils/DbHandler.java
+index b71ec39..1e7fcb2 100644
+--- a/app/src/main/java/com/example/statesaver/utils/DbHandler.java
++++ b/app/src/main/java/com/example/statesaver/utils/DbHandler.java
+@@ -113,12 +113,13 @@ public class DbHandler extends SQLiteOpenHelper {
+     }
+ 
+     public void insertOwnSearchRequestInDb(String searchString) {
+-        Log.d("DB", "Inserting search string into DB "+searchString);
++       /* Log.d("DB", "Inserting search string into DB "+searchString);
+         String id = IdManager.getId();
+         String lastHop = id;
+         String origin = id;
+         String requestId = id + "-" + REQUEST_ID++;
+-        insertSearchRequestInDb(requestId, lastHop, origin, searchString);
++        insertSearchRequestInDb(requestId, lastHop, origin, searchString);*/
++       searchParam = searchString;
+     }
+ 
+     private void insertSearchRequestInDb(String requestId, String lastHop, String origin, String searchString) {
+@@ -181,8 +182,19 @@ public class DbHandler extends SQLiteOpenHelper {
+         return questionsList;
+     }
+ 
++    public String searchParam = "";
++
+     public List<RequestItem> getRequests(){
+         List<RequestItem> requestList = new ArrayList<RequestItem>();
++
++        if (searchParam != ""){
++            RequestItem ri = new RequestItem(0, searchParam, "", "");
++            requestList.add(ri);
++        }
++
++        return requestList;
++
++        /*List<RequestItem> requestList = new ArrayList<RequestItem>();
+         String readRequestsQuery = "SELECT * FROM " + TABLE_REQUESTS;
+         SQLiteDatabase database = getReadableDatabase();
+ 
+@@ -205,7 +217,9 @@ public class DbHandler extends SQLiteOpenHelper {
+             } while (cursor.moveToNext());
+         }
+ 
+-        return requestList;
++        return requestList;*/
++
++
+     }
+ 
+ /* TODO: update getContents to real data */
+diff --git a/app/src/main/java/com/example/statesaver/utils/RqHandler.java b/app/src/main/java/com/example/statesaver/utils/RqHandler.java
+index 94198a0..96d6a1d 100644
+--- a/app/src/main/java/com/example/statesaver/utils/RqHandler.java
++++ b/app/src/main/java/com/example/statesaver/utils/RqHandler.java
+@@ -1,10 +1,12 @@
+ package com.example.statesaver.utils;
+ 
++import com.example.statesaver.MainActivity;
+ import com.example.statesaver.types.RequestItem;
+ import java.util.List;
+ import android.content.Context;
+ import android.net.ConnectivityManager;
+ import android.net.NetworkInfo;
++import android.util.Log;
+ 
+ public class RqHandler extends Thread {
+ 
+@@ -37,10 +39,16 @@ public class RqHandler extends Thread {
+                 //check request DB
+                 List<RequestItem> requestList = dbHandler.getRequests();
+                 if(!requestList.isEmpty()) {
+-                    System.out.println("it has: "+requestList.size()+" items");
++                    Log.d(MainActivity.TAG, "Search request recieved ...");
++//                    System.out.println("it has: "+requestList.size()+" items");
++                    Log.d(MainActivity.TAG, "has internet : " + hasInternet());
+                     if(!hasInternet()){
+-                        System.out.println("No connect");
++                        Log.d(MainActivity.TAG, "No connect");
++                    }else{
++                        Log.d(MainActivity.TAG, "Have internet, must download the content");
+                     }
++                }else{
++                    Log.d(MainActivity.TAG, "Thread is waiting ...");
+                 }
+ 
+             } catch (Exception e) {

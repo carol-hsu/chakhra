@@ -92,8 +92,8 @@ public class SearchContentFragment extends Fragment {
 
     private void insertSearchRequestInDb(String searchString) {
         Log.d(MainActivity.TAG, "adding to database : " + searchString);
-        // TODO DbHandler.getInstance(getContext()).insertOwnSearchRequestInDb(searchString);
-        ((MainActivity) getActivity()).sendP2p(searchString);
+        DbHandler.getInstance(getContext()).insertOwnSearchRequestInDb(searchString);
+        //((MainActivity) getActivity()).sendP2p(searchString);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
