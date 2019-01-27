@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.statesaver.utils.DbHandler;
 import com.example.statesaver.utils.IdManager;
@@ -24,7 +25,11 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         ContentFragment.OnFragmentInteractionListener,
         HelpFragment.OnFragmentInteractionListener,
-        SearchFragment.OnFragmentInteractionListener {
+//        SearchFragment.OnFragmentInteractionListener {
+        SearchContentFragment.OnFragmentInteractionListener {
+
+    public static final String TAG = "MyActivityP2P";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,8 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         Class fragmentClass = null;
-        fragmentClass = SearchFragment.class;
+//        fragmentClass = SearchFragment.class;
+        fragmentClass = SearchContentFragment.class;
         try {
             fragment = (Fragment) fragmentClass.newInstance();
         } catch (Exception e) {
@@ -108,7 +114,8 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = null;
         Class fragmentClass = null;
         if (id == R.id.nav_search) {
-            fragmentClass = SearchFragment.class;
+//            fragmentClass = SearchFragment.class;
+            fragmentClass = SearchContentFragment.class;
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_content) {
