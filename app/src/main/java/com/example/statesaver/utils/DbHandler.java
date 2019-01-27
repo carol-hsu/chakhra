@@ -11,8 +11,10 @@ import com.example.statesaver.types.AnswerItem;
 import com.example.statesaver.types.ContentData;
 import com.example.statesaver.types.HelpItem;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DbHandler extends SQLiteOpenHelper {
 
@@ -57,7 +59,7 @@ public class DbHandler extends SQLiteOpenHelper {
     private void createRequestTable(SQLiteDatabase db) {
         String CREATE_REQ_TABLE = "CREATE TABLE " + TABLE_REQUESTS +
                 "(" +
-                REQUEST_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
+                REQUEST_ID_FIELD + " TEXT ," + // Define a primary key
                 REQUEST_TEXT_FIELD + " TEXT, " +
                 REQUEST_LAST_HOP_FIELD + " TEXT, " +
                 REQUEST_ORIGIN_FIELD + " TEXT" +
@@ -97,7 +99,11 @@ public class DbHandler extends SQLiteOpenHelper {
         String id = IdManager.getId();
         String lastHop = id;
         String origin = id;
-        String requestId = id + "-" + REQUEST_ID++;
+        String requestId = id + "-" + UUID.randomUUID().toString() + REQUEST_ID++ ;
+        Log.d("DB", "id = "+id);
+        Log.d("DB", "lastHop = "+lastHop);
+        Log.d("DB", "origin = "+origin);
+        Log.d("DB", "reqId = "+requestId);
         insertSearchRequestInDb(requestId, lastHop, origin, searchString);
     }
 
@@ -105,9 +111,9 @@ public class DbHandler extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(REQUEST_ID_FIELD, requestId);
+        values.put(REQUEST_TEXT_FIELD, searchString);
         values.put(REQUEST_LAST_HOP_FIELD, lastHop);
         values.put(REQUEST_ORIGIN_FIELD, origin);
-        values.put(REQUEST_TEXT_FIELD, searchString);
 
         database.insert(TABLE_REQUESTS, null, values);
     }
