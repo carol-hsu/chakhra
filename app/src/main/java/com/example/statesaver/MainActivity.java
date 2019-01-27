@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
         SearchFragment.OnFragmentInteractionListener,
         WifiP2pManager.ChannelListener,
         WifiP2pManager.ConnectionInfoListener,
+        CommunityFragment.OnFragmentInteractionListener,
         Handler.Callback {
 
     private Thread rqHander;
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = toolbar;
         setSupportActionBar(toolbar);
 
         /** Wifi P2P stuff starts */
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity
             index = 1;
             fragmentClass = ContentFragment.class;
         } else if (id == R.id.nav_community){
-            index = 4;
+            index = 3;
             fragmentClass = CommunityFragment.class;
         }
 
