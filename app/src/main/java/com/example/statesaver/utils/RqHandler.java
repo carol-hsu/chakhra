@@ -36,12 +36,12 @@ public class RqHandler extends Thread {
                 sleep(3000);
                 //check request DB
                 List<RequestItem> requestList = dbHandler.getRequests();
-                if(!requestList.isEmpty()) {
-                    System.out.println("it has: "+requestList.size()+" items");
-                    if(!hasInternet()){
-                        System.out.println("No connect");
-                    }
+                //if(!requestList.isEmpty()) {
+                // System.out.println("it has: "+requestList.size()+" items");
+                if(!hasInternet()){
+                    System.out.println("No connect");
                 }
+                //}
 
             } catch (Exception e) {
                 System.out.println("request handler: "+ e.toString());

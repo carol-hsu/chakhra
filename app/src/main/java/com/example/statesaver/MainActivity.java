@@ -1,5 +1,6 @@
 package com.example.statesaver;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity
         SearchContentFragment.OnFragmentInteractionListener {
 
     public static final String TAG = "MyActivityP2P";
-
+//    private DbHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        IdManager.initialize("UNIQUE_ID"); // TODO Make this unique ! Duh !
+        IdManager.initialize("UNIQUEID"); // TODO Make this unique ! Duh !
 
         Fragment fragment = null;
         Class fragmentClass = null;
@@ -65,8 +66,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         DbHandler.getInstance(getApplicationContext());
-        Thread rqHander = new RqHandler(getApplicationContext());
-        rqHander.start();
+
+        //Thread rqHander = new RqHandler(getApplicationContext());
+        //rqHander.start();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.statesaver;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -64,11 +66,43 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    private boolean hasInternet(){
+        boolean is_connect = true;
+        if(connectManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState()
+                != NetworkInfo.State.CONNECTED &&
+                connectManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState()
+                        != NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            is_connect = false;
+        }
+        return is_connect;
+    }
+
+    private String[] dummy_run(String query){
+        System.out.println("Get:" + query);
+        String[] python_loop_urls = { "https://www.w3schools.com/python/python_for_loops.asp",
+                "https://wiki.python.org/moin/ForLoop",
+                "https://www.geeksforgeeks.org/loops-in-python/"};
+        String[] java_class_urls = { "https://www.geeksforgeeks.org/classes-objects-java/",
+                "https://www.w3schools.com/java/java_classes.asp",
+                "https://www.programiz.com/java-programming/class-objects"};
+        if(query.toLowerCase().contains("python"))
+            return python_loop_urls;
+
+        return java_class_urls;
+    }
+
     private void searchButtonClicked(String searchString) {
         if (searchString.compareTo("") == 0) {
             return;
         }
-        insertSearchRequestInDb(searchString);
+
+        if (!hasInternet()){
+            //do p2p
+        }else{
+            dummy_run(searchString) // url array for snapshots
+        }
+        //insertSearchRequestInDb(searchString);
     }
 
     private void insertSearchRequestInDb(String searchString) {

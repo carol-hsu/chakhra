@@ -36,23 +36,23 @@ public class DbHandler extends SQLiteOpenHelper {
     public static final String TIMESTAMP="timestamp";
     public static final String SAVED_PAGE_BASE_DIRECTORY="tags";
 */
-    public static String TABLE_REQUESTS = "requests";
+    public static String TABLE_REQUESTS = "requests_1";
     public static String REQUEST_ID_FIELD = "request_id";
     public static String REQUEST_TEXT_FIELD = "request_text";
     public static String REQUEST_LAST_HOP_FIELD = "last_hop";
     public static String REQUEST_ORIGIN_FIELD = "origin";
 
-    public static String TABLE_QUESTIONS = "questions";
+    public static String TABLE_QUESTIONS = "questions_1";
     public static String QUESTION_ID_FIELD = "question_id";
     public static String QUESTION_TEXT_FIELD = "question_text";
 
-    public static String TABLE_ANSWERS = "answers";
+    public static String TABLE_ANSWERS = "answers_1";
     public static String QUESTION_ID_FKEY_FIELD = "question_id";
     public static String ANSWER_TEXT_FIELD = "answer_text";
     public static String ANSWER_ID_FIELD = "answer_id";
 
     public static String DATABASE_NAME = "unnamed_database";
-    public static int DATABASE_VERSION = 1;
+    public static int DATABASE_VERSION = 3;
 
     public DbHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -67,9 +67,11 @@ public class DbHandler extends SQLiteOpenHelper {
     }
 
     private void createRequestTable(SQLiteDatabase db) {
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_REQUESTS);
+
         String CREATE_REQ_TABLE = "CREATE TABLE " + TABLE_REQUESTS +
                 "(" +
-                REQUEST_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
+                REQUEST_ID_FIELD + " TEXT PRIMARY KEY," + // Define a primary key
                 REQUEST_TEXT_FIELD + " TEXT, " +
                 REQUEST_LAST_HOP_FIELD + " TEXT, " +
                 REQUEST_ORIGIN_FIELD + " TEXT" +
@@ -79,18 +81,22 @@ public class DbHandler extends SQLiteOpenHelper {
     }
 
     private void createQuestionsTable(SQLiteDatabase db) {
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_QUESTIONS);
+
         String CREATE_QUESTIONS_TABLE = "CREATE TABLE " + TABLE_QUESTIONS +
                 "(" +
-                QUESTION_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
+                QUESTION_ID_FIELD + " TEXT PRIMARY KEY," + // Define a primary key
                 QUESTION_TEXT_FIELD + " TEXT " +
                 ")";
         db.execSQL(CREATE_QUESTIONS_TABLE);
     }
 
     private void createContentTable(SQLiteDatabase db) {
+//        db.execSQL("DROP TABLE IF EXISTS "+ TABLE_CONTENT);
+
         String CREATE_CONTENT_TABLE = "CREATE TABLE " + TABLE_CONTENT +
                 "(" +
-                CONTENT_ID_FIELD + " INTEGER PRIMARY KEY," + // Define a primary key
+                CONTENT_ID_FIELD + " TEXT PRIMARY KEY," + // Define a primary key
                 CONTENT_FILE_LOC_FIELD + " TEXT, " +
                 CONTENT_FILE_TYPE_FIELD + " TEXT " +
 /*
@@ -112,17 +118,19 @@ public class DbHandler extends SQLiteOpenHelper {
         createRequestTable(db);
     }
 
+
     public void insertOwnSearchRequestInDb(String searchString) {
         Log.d("DB", "Inserting search string into DB "+searchString);
         String id = IdManager.getId();
         String lastHop = id;
         String origin = id;
-        String requestId = id + "-" + REQUEST_ID++;
+        String requestId = id  + REQUEST_ID++;
         insertSearchRequestInDb(requestId, lastHop, origin, searchString);
     }
 
     private void insertSearchRequestInDb(String requestId, String lastHop, String origin, String searchString) {
         SQLiteDatabase database = getWritableDatabase();
+
         ContentValues values = new ContentValues();
         values.put(REQUEST_ID_FIELD, requestId);
         values.put(REQUEST_LAST_HOP_FIELD, lastHop);
@@ -197,8 +205,8 @@ public class DbHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 RequestItem ri = new RequestItem();
-                ri.setRequestId(cursor.getInt(cursor.getColumnIndex(REQUEST_ID_FIELD)));
-                ri.setRequest(cursor.getString(cursor.getColumnIndex(REQUEST_TEXT_FIELD)));
+                ri.setRequestId(cursor.getString(cursor.getColumnIndex(REQUEST_ID_FIELD)));
+                ri.setRequestText(cursor.getString(cursor.getColumnIndex(REQUEST_TEXT_FIELD)));
                 ri.setLastHop(cursor.getString(cursor.getColumnIndex(REQUEST_LAST_HOP_FIELD)));
                 ri.setOrigin(cursor.getString(cursor.getColumnIndex(REQUEST_ORIGIN_FIELD)));
                 requestList.add(ri);
@@ -237,6 +245,7 @@ public class DbHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+//        db.execSQL("DROP TABLE IF EXISTS "+ DATABASE_NAME);
+//        onCreate(db);
     }
 }
