@@ -81,9 +81,14 @@ public class MainActivity extends AppCompatActivity
 
     final Handler dataHandler = new Handler(this);
 
+    private Toolbar mToolbar;
+    // toolbar titles respected to selected nav menu item
+    private String[] activityTitles;
+
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
         this.isWifiP2pEnabled = isWifiP2pEnabled;
     }
+
 
 
     @Override
@@ -140,9 +145,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        View hView =  navigationView.getHeaderView(0);
+//        TextView nav_user = (TextView)hView.findViewById(R.id.toolbar);
+//        nav_user.setText("sfds");
+
         DbHandler.getInstance(getApplicationContext());
 
-
+        // load toolbar titles from string resources
+        activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
     }
 
     /** register the BroadcastReceiver with the intent values to be matched */
@@ -208,19 +219,24 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        int index = 0;
         Fragment fragment = null;
         Class fragmentClass = null;
         if (id == R.id.nav_search) {
 //            fragmentClass = SearchFragment.class;
             fragmentClass = SearchContentFragment.class;
+            index = 0;
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
+            index = 2;
         } else if (id == R.id.nav_content) {
             Log.d(TAG, "Clicked nav content");
             fragmentClass = ContentFragment.class;
+            index = 1;
         }
 //        else if (id == R.id.nav_community){
 //            fragmentClass = CommunityTrendFragment.class;
+//        index = 4;
 //        }
 
         try {
@@ -233,6 +249,9 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        mToolbar.setTitle(activityTitles[index]);
+
         return true;
     }
 
