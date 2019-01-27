@@ -1,7 +1,10 @@
 package com.example.statesaver;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -15,6 +18,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -202,12 +206,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_content) {
-            Log.d(TAG, "Clicked nav content");
             fragmentClass = ContentFragment.class;
+        } else if (id == R.id.nav_community){
+            fragmentClass = CommunityFragment.class;
         }
-//        else if (id == R.id.nav_community){
-//            fragmentClass = CommunityTrendFragment.class;
-//        }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
@@ -349,6 +351,7 @@ public class MainActivity extends AppCompatActivity
     private void handleRequest(String requestId, String searchRequest) {
         Log.d(TAG, "Received request " + searchRequest);
     }
+
 
     public class AsyncWriter extends AsyncTask<P2pMessage, Integer, String> {
 
